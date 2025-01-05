@@ -5,15 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.reactive.function.client.WebClient;
+//import org.springframework.web.reactive.function.client.WebClient;
 
 import com.micro.stud.entity.Student;
+import com.micro.stud.feignclients.CourseFeignClient;
 import com.micro.stud.repository.StudentRepository;
 import com.micro.stud.request.StudentRequest;
 import com.micro.stud.response.CourseResponse;
 import com.micro.stud.response.StudentResponse;
 
-import reactor.core.publisher.Mono;
+//import reactor.core.publisher.Mono;
 
 @Service
 public class StudentServiceImp implements StudentService{
@@ -22,10 +23,11 @@ public class StudentServiceImp implements StudentService{
 	Logger logger = LoggerFactory.getLogger(StudentServiceImp.class);
 	
 	
+//	@Autowired
+//	private WebClient webClient;
+	
 	@Autowired
-	private WebClient webClient;
-	
-	
+	private CourseFeignClient coursefeignClient;
 	
 	@Autowired
 	private StudentRepository studentRepository;
@@ -62,13 +64,16 @@ public class StudentServiceImp implements StudentService{
 		return response;
 	}
 	
-	
+	@Override
 	public CourseResponse getCourseById(Long courseId) {
+		
+		return coursefeignClient.getById(courseId);
 
-		Mono<CourseResponse> courseResponse = webClient.get().uri("/getById/"+courseId).retrieve()
-				.bodyToMono(CourseResponse.class);
-
-		return courseResponse.block();
+//		Mono<CourseResponse> courseResponse = webClient.get()
+//				.uri("/getById/"+courseId)
+//				.retrieve()
+//				.bodyToMono(CourseResponse.class);
+//		return courseResponse.block();
 	}
 }
 
